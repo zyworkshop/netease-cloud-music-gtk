@@ -25,7 +25,7 @@ jobs:
       - name: Publish
         run: |
           name="netease-cloud-music-gtk4"
-          asset_path="./target/release/$name"
+          asset_path="/home/runner/work/netease-cloud-music-gtk/netease-cloud-music-gtk/netease-cloud-music-gtk/_build/target/release/$name"
           if [ -f "$asset_path" ]; then
             echo "Uploading $name"
             curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST -H "Content-Type: application/octet-stream" --data-binary "@$asset_path" "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ github.event.release.id }}/assets?name=$name"
