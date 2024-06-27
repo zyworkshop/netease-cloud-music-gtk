@@ -1,4 +1,4 @@
-name: Build and Publish Netease Cloud Music GTK
+name: Build and Upload Netease Cloud Music GTK
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     types: [created]
 
 jobs:
-  build_and_install_and_publish:
+  build_and_upload:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -35,26 +35,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: compiled-netease-cloud-music-gtk
-          path: netease-cloud-music-gtk/_build/target/release/
-
-      - name: Publish
-        if: github.event_name == 'release'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd netease-cloud-music-gtk/_build
-          asset_name="netease-cloud-music-gtk4"
-          asset_path="./target/release/$asset_name"
-          release_id=$(jq --raw-output .release.id "$GITHUB_EVENT_PATH")
-          echo "Release ID: $release_id"
-          echo "Asset Path: $asset_path"
-          if [ -f "$asset_path" ]; then
-            echo "Uploading $asset_name"
-            curl -H "Authorization: token $GITHUB_TOKEN" \
-                 -H "Content-Type: application/octet-stream" \
-                 --data-binary @"$asset_path" \
-                 "https://uploads.github.com/repos/${{ github.repository }}/releases/$release_id/assets?name=$asset_name"
-          else
-            echo "Asset not found: $asset_path"
-          fi
+          name: netease-cloud-music-gtk4
+          path: netease-cloud-music-gtk/_build/target/release/netease-cloud-music-gtk4
