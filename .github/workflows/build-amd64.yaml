@@ -3,6 +3,8 @@ name: Build and Publish Netease Cloud Music GTK
 on:
   push:
     branches: [master]
+  release:
+    types: [created]
 
 jobs:
   build_and_install_and_publish:
@@ -10,11 +12,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        
       - name: Install dependencies
         run: sudo apt-get install -y libdbus-1-dev gettext libunwind-dev desktop-file-utils libssl-dev meson rustc libgtk-4-dev libadwaita-1-dev libgstreamer-plugins-bad1.0-dev
+        
       - name: Download source code
         run: git clone https://github.com/gmg137/netease-cloud-music-gtk.git
         working-directory: ${{ github.workspace }}
+        
       - name: Compile
         run: |
           cd netease-cloud-music-gtk
@@ -23,12 +28,20 @@ jobs:
           ninja
       
       - name: Publish
+        if: github.event_name == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          name="netease-cloud-music-gtk4"
-          asset_path="/home/runner/work/netease-cloud-music-gtk/netease-cloud-music-gtk/netease-cloud-music-gtk/_build/target/release/$name"
+          cd netease-cloud-music-gtk/_build
+          asset_name="netease-cloud-music-gtk4"
+          asset_path="./target/release/$asset_name"
+          release_id=$(jq --raw-output .release.id "$GITHUB_EVENT_PATH")
           if [ -f "$asset_path" ]; then
-            echo "Uploading $name"
-            curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -X POST -H "Content-Type: application/octet-stream" --data-binary "@$asset_path" "https://uploads.github.com/repos/${{ github.repository }}/releases/${{ github.event.release.id }}/assets?name=$name"
+            echo "Uploading $asset_name"
+            curl -H "Authorization: token $GITHUB_TOKEN" \
+                 -H "Content-Type: application/octet-stream" \
+                 --data-binary @"$asset_path" \
+                 "https://uploads.github.com/repos/${{ github.repository }}/releases/$release_id/assets?name=$asset_name"
           else
             echo "Asset not found: $asset_path"
           fi
