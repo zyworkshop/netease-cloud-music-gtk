@@ -2,7 +2,7 @@ name: Build, Install and Publish Netease Cloud Music GTK
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build_and_install_and_publish:
