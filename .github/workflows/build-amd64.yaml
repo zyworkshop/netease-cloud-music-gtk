@@ -9,25 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
+        uses: actions/checkout
       - name: Install dependencies
         run: sudo apt-get install -y libssl-dev meson rustc libgtk-4-dev libadwaita-1-dev libgstreamer-plugins-bad1.0-dev
-
       - name: Download source code
         run: git clone https://github.com/gmg137/netease-cloud-music-gtk.git
         working-directory: ${{ github.workspace }}
-
       - name: Compile
         run: |
           cd netease-cloud-music-gtk
           meson _build
           cd _build
           ninja
-
       - name: Install
         run: sudo ninja install
-
       - name: Publish
         run: |
           tar -czvf netease-cloud-music-gtk4.tar.gz /usr/local/bin/netease-cloud-music-gtk4
