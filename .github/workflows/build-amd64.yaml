@@ -33,7 +33,7 @@ jobs:
           ls -la
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: netease-cloud-music-gtk4
           path: netease-cloud-music-gtk/_build/target/release/netease-cloud-music-gtk4
