@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Install dependencies
-        run: sudo apt-get install -y libunwind-dev libssl-dev meson rustc libgtk-4-dev libadwaita-1-dev libgstreamer-plugins-bad1.0-dev
+        run: sudo apt-get install -y libdbus-1-dev libunwind-dev libssl-dev meson rustc libgtk-4-dev libadwaita-1-dev libgstreamer-plugins-bad1.0-dev
       - name: Download source code
         run: git clone https://github.com/gmg137/netease-cloud-music-gtk.git
         working-directory: ${{ github.workspace }}
